@@ -251,17 +251,14 @@ class ProcessOrder {
 		if ($cust_po){$payment_notes .= " Customer PO: {$cust_po}";}
 		$shipping_address = "{$order['shipping_address']['firstname']} {$order['shipping_address']['lastname']}\n{$order['shipping_address']['street']}\n{$order['shipping_address']['city']}, {$order['shipping_address']['region']} {$order['shipping_address']['postcode']} {$order['shipping_address']['country_id']}\n\n{$order['shipping_address']['email']}\n{$order['shipping_address']['telephone']}\n{$order["shipping_description"]}
     ";
-		/*if ($this->order['ShippingFee'] > 0) {
-			$shipping_address .= 'Amount: '.$this->order['ShippingFee'];
-		}*/
+		if ($this->order ['shipping_amount'] > 0) {
+			$shipping_address .= 'Amount: '.$this->order ['shipping_amount'];
+		}
 		$billing_address = "{$order['billing_address']['firstname']} {$order['billing_address']['lastname']}\n{$order['billing_address']['street']}\n{$order['billing_address']['city']}, {$order['billing_address']['region']} {$order['billing_address']['postcode']} {$order['billing_address']['country_id']}\n\n{$order['billing_address']['email']}\n{$order['billing_address']['telephone']}
     ";
-	
-	$billing_address .= 'Sales Tax: '.$this->order['SalesTax'];
-	 
 		
-		//$gift_message = isset ( $order ['gift_message'] ) ? mysql_real_escape_string ( $order ['gift_message'] ) : '';
-		$gift_message = isset ( $order ['gift_message'] ) ?  $order ['gift_message']  : '';
+		$gift_message = isset ( $order ['gift_message'] ) ? mysql_real_escape_string ( $order ['gift_message'] ) : '';
+		
 			
 		$this->order_array = array (
 				'GoingDirect' => 'No',
@@ -358,7 +355,7 @@ class ProcessOrder {
 		
 		// sales tax
 		//if ($this->order ['SalesTax'] > 0) {
-			/*$line_item_array = array (
+			$line_item_array = array (
 					'order_id' => $order_id,
 					'Trans_No' => $this->transaction_no,
 					'supplier_id' => 2326,
@@ -368,7 +365,7 @@ class ProcessOrder {
 					'ItemDescription' => 'Sales Tax Amount',
 					'Product_Price' => $this->order['SalesTax']
 				);
-			$this->order_array['items'][] = $line_item_array;*/
+			$this->order_array['items'][] = $line_item_array;
 		//}
 		
 		echo "<br><br>Order array:<br>";
