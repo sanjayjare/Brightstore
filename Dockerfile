@@ -1,5 +1,7 @@
 FROM skiychan/nginx-php7
 
-Expose 443 80
+Expose 80
+Expose 443
 
-copy .src/ /data/www/
+copy .src /data/www/
+
