@@ -1,6 +1,6 @@
 <?php 
 
-//error_reporting(0);
+error_reporting(0);
 
 include('BS_process_sample_gift.php');
 $status="New";
@@ -61,15 +61,17 @@ $xmldata = str_replace("Â® "," ",$xmldata);
 
 /*print "<pre>";
 print_r($xmldata);
-print "</pre>";
-*/
+print "</pre>";*/
+
 
 
 $xml = simplexml_load_string($xmldata);
 //$xml2xml = $xml->BrightStoresDataSet->OrderLine->zDescription;
 
 $stores="";
-foreach($xml->BrightStoresDataSet->Store as $store ){
+$storearray = isset($xml->BrightStoresDataSet->Store) ? $xml->BrightStoresDataSet->Store : "";
+if(!empty($storearray)){
+foreach($storearray as $store ){
 	$zStoreID = json_decode(json_encode($store->zStoreID),true);
 	$zStoreName = json_decode(json_encode($store->zStoreName),true);
 	$zCompanyName = json_decode(json_encode($store->zCompanyName),true);
@@ -82,21 +84,24 @@ foreach($xml->BrightStoresDataSet->Store as $store ){
 	$zDefaultShippingMethod = json_decode(json_encode($store->zDefaultShippingMethod),true);
 	
 	$stores[] = array(
-			"zStoreID"=>$zStoreID[0], 
-			"zStoreName"=>$zStoreName[0], 
-			"zCompanyName"=>$zCompanyName[0], 
-			"zDefaultUserGroupID"=>$zDefaultUserGroupID[0], 
-			"zFromEmail"=>$zFromEmail[0], 
-			"zExclusiveBillingState"=>$zExclusiveBillingState[0], 
-			"zStoreLevel"=>$zStoreLevel[0], 
-			"zAccessCSM"=>$zAccessCSM[0], 
-			"zExtended2Features"=>$zExtended2Features[0], 
-			"zDefaultShippingMethod"=>$zDefaultShippingMethod[0]
+			"zStoreID"=>@$zStoreID[0], 
+			"zStoreName"=>@$zStoreName[0], 
+			"zCompanyName"=>@$zCompanyName[0], 
+			"zDefaultUserGroupID"=>@$zDefaultUserGroupID[0], 
+			"zFromEmail"=>@$zFromEmail[0], 
+			"zExclusiveBillingState"=>@$zExclusiveBillingState[0], 
+			"zStoreLevel"=>@$zStoreLevel[0], 
+			"zAccessCSM"=>@$zAccessCSM[0], 
+			"zExtended2Features"=>@$zExtended2Features[0], 
+			"zDefaultShippingMethod"=>@$zDefaultShippingMethod[0]
 	);
+}
 }
 
 $users="";
-foreach($xml->BrightStoresDataSet->User as $user ){
+$usersarray = isset($xml->BrightStoresDataSet->User) ? $xml->BrightStoresDataSet->User : "";
+if(!empty($usersarray)){
+foreach($usersarray as $user ){
 	$zUserID = json_decode(json_encode($user->zUserID),true);
 	$zUserGroupID = json_decode(json_encode($user->zUserGroupID),true);
 	$zUsername = json_decode(json_encode($user->zUsername),true);
@@ -106,18 +111,21 @@ foreach($xml->BrightStoresDataSet->User as $user ){
 	$zBudgetEnabled = json_decode(json_encode($user->zBudgetEnabled),true);
 		
 	$users[$zUserID[0]] = array(
-			"zUserID"=>$zUserID[0], 
-			"zUserGroupID"=>$zUserGroupID[0], 
-			"zUsername"=>$zUsername[0], 
-			"zEmail"=>$zEmail[0], 
-			"zFirstName"=>$zFirstName[0], 
-			"zLastName"=>$zLastName[0], 
-			"zBudgetEnabled"=>$zBudgetEnabled[0]
+			"zUserID"=>@$zUserID[0], 
+			"zUserGroupID"=>@$zUserGroupID[0], 
+			"zUsername"=>@$zUsername[0], 
+			"zEmail"=>@$zEmail[0], 
+			"zFirstName"=>@$zFirstName[0], 
+			"zLastName"=>@$zLastName[0], 
+			"zBudgetEnabled"=>@$zBudgetEnabled[0]
 	);
+}
 }
 
 $orderline="";
-foreach($xml->BrightStoresDataSet->OrderLine as $orderlin){
+$orderlinearray = isset($xml->BrightStoresDataSet->OrderLine) ? $xml->BrightStoresDataSet->OrderLine : "";
+if(!empty($orderlinearray)){
+foreach($orderlinearray as $orderlin){
 	$xml2xml = $orderlin->zDescription;
 	
 	//$xml2xml1 = htmlentities($xml2xml);
@@ -144,25 +152,32 @@ foreach($xml->BrightStoresDataSet->OrderLine as $orderlin){
 	$InternalId = json_decode(json_encode($orderlin->InternalId),true);
 	
 	$orderline[]=array(
-			"zOrderLineID"=>$zOrderLineID[0], 
-			"zOrderID"=>$zOrderID[0], 
-			"zQuantity"=>$zQuantity[0], 
-			"zUnitPrice"=>$zUnitPrice[0], 
-			"zSize"=>$zSize[0], 
-			"zSubsidy"=>$zSubsidy[0], 
-			"zStartupCost"=>$zStartupCost[0], 
-			"COGS"=>$COGS[0],
-			"SizeSku"=>$SizeSku[0], 
-			"ColorSku"=>$ColorSku[0], 
-			"InternalId"=>$InternalId[0], 		
+			"zOrderLineID"=>@$zOrderLineID[0], 
+			"zOrderID"=>@$zOrderID[0], 
+			"zQuantity"=>@$zQuantity[0], 
+			"zUnitPrice"=>@$zUnitPrice[0], 
+			"zSize"=>@$zSize[0], 
+			"zSubsidy"=>@$zSubsidy[0], 
+			"zStartupCost"=>@$zStartupCost[0], 
+			"COGS"=>@$COGS[0],
+			"SizeSku"=>@$SizeSku[0], 
+			"ColorSku"=>@$ColorSku[0], 
+			"InternalId"=>@$InternalId[0], 		
 			"zDescription"=>$xml2
 		);
 	
 }
+}
+else{
+	echo "No new orders.";
+}
+
 $singleorderarray="";
 
 $orders="";
-foreach($xml->BrightStoresDataSet->Order as $order){
+$ordersarray = isset($xml->BrightStoresDataSet->Order) ? $xml->BrightStoresDataSet->Order : "";
+if(!empty($ordersarray)){
+foreach($ordersarray as $order){
 	$xml2xml = $order->zPaymentData;
 	
 	$xml2xml1 = htmlspecialchars_decode($xml2xml);
@@ -211,41 +226,41 @@ foreach($xml->BrightStoresDataSet->Order as $order){
 			);*/
 	
 	$orders[$zOrderID[0]]=array(
-			'zOrderID'=>$zOrderID[0],
-			'zUserID'=>$zUserID[0],
-			'zOrderStatus'=>$zOrderStatus[0],
-			'zShippingMethodType'=>$zShippingMethodType[0],
-			'zShippingFee'=>$zShippingFee[0],
-			'zHandlingFee'=>$zHandlingFee[0],
-			'zSalesTax'=>$zSalesTax[0],
-			'zOrderTotal'=>$zOrderTotal[0],
-			'zBillingName'=>$zBillingName[0],
-			'zBillingCompany'=>$zBillingCompany[0],
-			'zBillingStreet1'=>$zBillingStreet1[0],
-			'zBillingCity'=>$zBillingCity[0],
-			'zBillingState'=>$zBillingState[0],
-			'zBillingZip'=>$zBillingZip[0],
-			'zBillingCountry'=>$zBillingCountry[0],
-			'zBillingPhone'=>$zBillingPhone[0],
-			'zBillingEmail'=>$zBillingEmail[0],
-			'zShippingName'=>$zShippingName[0],
-			'zShippingCompany'=>$zShippingCompany[0],
-			'zShippingStreet1'=>$zShippingStreet1[0],
-			'zShippingCity'=>$zShippingCity[0],
-			'zShippingState'=>$zShippingState[0],
-			'zShippingZip'=>$zShippingZip[0],
-			'zShippingCountry'=>$zShippingCountry[0],
-			'zShippingPhone'=>$zShippingPhone[0],
-			'zShippingEmail'=>$zShippingEmail[0],
-			'zLastTouched'=>$zLastTouched[0],
-			'zLastUpdated'=>$zLastUpdated[0],
-			'zOrderDate'=>$zOrderDate[0],
-			'zNotes'=>$zNotes[0],
-			'zName'=>$zName,
-			'zDiscountOverride'=>$zDiscountOverride,
-			'zDonation'=>$zDonation,
-			'zCouponCode '=>$zCouponCode,
-			'zPurchaseIntent '=>$zPurchaseIntent,
+			'zOrderID'=>@$zOrderID[0],
+			'zUserID'=>@$zUserID[0],
+			'zOrderStatus'=>@$zOrderStatus[0],
+			'zShippingMethodType'=>@$zShippingMethodType[0],
+			'zShippingFee'=>@$zShippingFee[0],
+			'zHandlingFee'=>@$zHandlingFee[0],
+			'zSalesTax'=>@$zSalesTax[0],
+			'zOrderTotal'=>@$zOrderTotal[0],
+			'zBillingName'=>@$zBillingName[0],
+			'zBillingCompany'=>@$zBillingCompany[0],
+			'zBillingStreet1'=>@$zBillingStreet1[0],
+			'zBillingCity'=>@$zBillingCity[0],
+			'zBillingState'=>@$zBillingState[0],
+			'zBillingZip'=>@$zBillingZip[0],
+			'zBillingCountry'=>@$zBillingCountry[0],
+			'zBillingPhone'=>@$zBillingPhone[0],
+			'zBillingEmail'=>@$zBillingEmail[0],
+			'zShippingName'=>@$zShippingName[0],
+			'zShippingCompany'=>@$zShippingCompany[0],
+			'zShippingStreet1'=>@$zShippingStreet1[0],
+			'zShippingCity'=>@$zShippingCity[0],
+			'zShippingState'=>@$zShippingState[0],
+			'zShippingZip'=>@$zShippingZip[0],
+			'zShippingCountry'=>@$zShippingCountry[0],
+			'zShippingPhone'=>@$zShippingPhone[0],
+			'zShippingEmail'=>@$zShippingEmail[0],
+			'zLastTouched'=>@$zLastTouched[0],
+			'zLastUpdated'=>@$zLastUpdated[0],
+			'zOrderDate'=>@$zOrderDate[0],
+			'zNotes'=>@$zNotes[0],
+			'zName'=>@$zName,
+			'zDiscountOverride'=>@$zDiscountOverride,
+			'zDonation'=>@$zDonation,
+			'zCouponCode '=>@$zCouponCode,
+			'zPurchaseIntent '=>@$zPurchaseIntent,
 			'zPaymentData' => $xml2
 		);
 		
@@ -253,10 +268,10 @@ foreach($xml->BrightStoresDataSet->Order as $order){
 		$singleorderarray=array($orders[$zOrderID[0]], $orderlinearray, $stores, $users[$zUserID[0]]);
 		$singleorder = new ProcessOrder($singleorderarray);
 		//$singleorder($singleorderarray);
-		//print_r($singleorder->get_stores());
+		//print_r($singleorder);
 		
 }
-
+}
 
 
 
