@@ -60,26 +60,25 @@ class ProcessOrder {
 		
 		$oitem = "";
 		foreach($order[1] as $orderline){
-			
-				$oitem[] = array(
-					"sku" => $orderline['zDescription']['@attributes']['itemNumber'],
-					"name" => $orderline['zDescription']['@attributes']['productName'],
-					"qty_ordered" => $orderline['zQuantity'],
-					"price" => $orderline['zUnitPrice'],
-					"Size" => $orderline['zSize'],
-					"Subsidy" => $orderline['zSubsidy'],
-					"StartupCost" => $orderline['zStartupCost'],
-					"COGS" => $orderline['COGS'],
-					"SizeSku" => $orderline['SizeSku'],
-					"ColorSku" => $orderline['ColorSku'],
-					"InternalId" => $orderline['InternalId'],
-					"productId" => $orderline['zDescription']['@attributes']['productId'],
-					"quantityMin" => $orderline['zDescription']['@attributes']['quantityMin'],
-					"colorName" => $orderline['zDescription']['@attributes']['colorName'],
-					"colorId" => $orderline['zDescription']['@attributes']['colorId'],
-					"sizeId" => $orderline['zDescription']['@attributes']['sizeId'],
-					"personalization" => $orderline['zDescription']['@attributes']['personalization'],
-					"Logo" => $orderline['zDescription']['logo']['@attributes']
+			$oitem[] = array(
+					"sku" => @$orderline['zDescription']['@attributes']['itemNumber'],
+					"name" => @$orderline['zDescription']['@attributes']['productName'],
+					"qty_ordered" => @$orderline['zQuantity'],
+					"price" => @$orderline['zUnitPrice'],
+					"Size" => @$orderline['zSize'],
+					"Subsidy" => @$orderline['zSubsidy'],
+					"StartupCost" => @$orderline['zStartupCost'],
+					"COGS" => @$orderline['COGS'],
+					"SizeSku" => @$orderline['SizeSku'],
+					"ColorSku" => @$orderline['ColorSku'],
+					"InternalId" => @$orderline['InternalId'],
+					"productId" => @$orderline['zDescription']['@attributes']['productId'],
+					"quantityMin" => @$orderline['zDescription']['@attributes']['quantityMin'],
+					"colorName" => @$orderline['zDescription']['@attributes']['colorName'],
+					"colorId" => @$orderline['zDescription']['@attributes']['colorId'],
+					"sizeId" => @$orderline['zDescription']['@attributes']['sizeId'],
+					"personalization" => @$orderline['zDescription']['@attributes']['personalization'],
+					"Logo" => @$orderline['zDescription']['logo']['@attributes']
 				);
 		}
 		//print_r($oitem);
@@ -186,60 +185,60 @@ class ProcessOrder {
 		$order = array(
 			"increment_id" => $customer_PO,
 			"status_history" => array(
-				"status" => $order[0]['zOrderStatus'],
-				"created_at" => $order[0]['zOrderDate'],
-				"comment" => $order[0]['zNotes']
+				"status" => @$order[0]['zOrderStatus'],
+				"created_at" => @$order[0]['zOrderDate'],
+				"comment" => @$order[0]['zNotes']
 			),
 			"payment" => array(
 				"po_number" => $customer_PO
 			),
 			"shipping_address" => array(
-				"firstname" => $zShippingfirstname,
-				"lastname" => $zShippinglastname,
-				"street" => $order[0]['zShippingStreet1'],
-				"city" => $order[0]['zShippingCity'],
-				"region" => $order[0]['zShippingState'],
-				"postcode" => $order[0]['zShippingZip'],
-				"country_id" => $order[0]['zShippingCountry'],
-				"email" => $order[0]['zShippingEmail'],
-				"telephone" => $order[0]['zShippingPhone'],
+				"firstname" => @$zShippingfirstname,
+				"lastname" => @$zShippinglastname,
+				"street" => @$order[0]['zShippingStreet1'],
+				"city" => @$order[0]['zShippingCity'],
+				"region" => @$order[0]['zShippingState'],
+				"postcode" => @$order[0]['zShippingZip'],
+				"country_id" => @$order[0]['zShippingCountry'],
+				"email" => @$order[0]['zShippingEmail'],
+				"telephone" => @$order[0]['zShippingPhone'],
 				"shipping_description" => ''
 			),
 			"billing_address" => array(
-				"firstname" => $zBillingfirstname,
-				"lastname" => $zBillinglastname,
-				"street" => $order[0]['zBillingStreet1'],
-				"city" => $order[0]['zBillingCity'],
-				"region" => $order[0]['zBillingState'],
-				"postcode" => $order[0]['zBillingZip'],
-				"country_id" => $order[0]['zBillingCountry'],
-				"email" => $order[0]['zBillingEmail'],
-				"telephone" => $order[0]['zBillingPhone']
+				"firstname" => @$zBillingfirstname,
+				"lastname" => @$zBillinglastname,
+				"street" => @$order[0]['zBillingStreet1'],
+				"city" => @$order[0]['zBillingCity'],
+				"region" => @$order[0]['zBillingState'],
+				"postcode" => @$order[0]['zBillingZip'],
+				"country_id" => @$order[0]['zBillingCountry'],
+				"email" => @$order[0]['zBillingEmail'],
+				"telephone" => @$order[0]['zBillingPhone']
 			),
 			"items" => $oitem,
-			"ShippingFee" => $order[0]['zShippingFee'],
-			"HandlingFee" => $order[0]['zHandlingFee'],
-			"SalesTax" => $order[0]['zSalesTax'],
-			"OrderTotal" => $order[0]['zOrderTotal'],
-			"gift_message" => $ogift_message
+			"ShippingFee" => @$order[0]['zShippingFee'],
+			"HandlingFee" => @$order[0]['zHandlingFee'],
+			"SalesTax" => @$order[0]['zSalesTax'],
+			"OrderTotal" => @$order[0]['zOrderTotal'],
+			"gift_message" => @$ogift_message
 		);
 		
 
 		
 		//print_r(get_stores());
 		//$this->stores = get_stores();    // need to create array from /home/AWS/bssrvc/stores_id.txt
-		$this->stores = $stores;
-		$this->order = $order;
-		$this->SoldTo = $userdetail;
+		$this->stores = @$stores;
+		$this->order = @$order;
+		$this->SoldTo = @$userdetail;
 		//print_r($stores);
 		//$this->SoldTo = getSoldTo($order['increment_id']); //user id      //  $stores[$order[''store_id']']['sold_to']  **may change
-		$this->SoldBy = $stores[0]['zStoreID']; //store id		//  $stores[$order[''store_id']']['sold_by']  **may change
+		$this->SoldBy = @$stores[0]['zStoreID']; //store id		//  $stores[$order[''store_id']']['sold_by']  **may change
 		//print_r($this->SoldBy);
 		$this->queue_id = 102;
-		$this->customer_PO =  $order ['increment_id'];  //use store order number as PO#
+		$this->customer_PO =  @$order ['increment_id'];  //use store order number as PO#
 		$this->transaction_no = date ( 'Ymd-His' ) . rand ( 1, 9 );
-		$payment = $order["status_history"];
-		$dt = $payment["created_at"];
+		$payment = @$order["status_history"];
+		$dt = @$payment["created_at"];
 		if(isset($dt)){
 			$dt = date('Y-m-d H:i:s', strtotime($dt));
 		}
@@ -249,16 +248,20 @@ class ProcessOrder {
 		$payment_notes = "{$auth_trans_id}Cust Order date: {$cust_order_date}";
 		$cust_po = empty($order["payment"]["po_number"])? false:  $order["payment"]["po_number"];	//  Customer PO from titos put in confidential notes
 		if ($cust_po){$payment_notes .= " Customer PO: {$cust_po}";}
-		$shipping_address = "{$order['shipping_address']['firstname']} {$order['shipping_address']['lastname']}\n{$order['shipping_address']['street']}\n{$order['shipping_address']['city']}, {$order['shipping_address']['region']} {$order['shipping_address']['postcode']} {$order['shipping_address']['country_id']}\n\n{$order['shipping_address']['email']}\n{$order['shipping_address']['telephone']}\n{$order["shipping_description"]}
+		$shipping_description = isset($order["shipping_description"]) ? $order["shipping_description"] : "";
+		$shipping_address = "{$order['shipping_address']['firstname']} {$order['shipping_address']['lastname']}\n{$order['shipping_address']['street']}\n{$order['shipping_address']['city']}, {$order['shipping_address']['region']} {$order['shipping_address']['postcode']} {$order['shipping_address']['country_id']}\n\n{$order['shipping_address']['email']}\n{$order['shipping_address']['telephone']}\n{$shipping_description}
     ";
-		if ($this->order ['shipping_amount'] > 0) {
-			$shipping_address .= 'Amount: '.$this->order ['shipping_amount'];
-		}
+		/*if ($this->order['ShippingFee'] > 0) {
+			$shipping_address .= 'Amount: '.$this->order['ShippingFee'];
+		}*/
 		$billing_address = "{$order['billing_address']['firstname']} {$order['billing_address']['lastname']}\n{$order['billing_address']['street']}\n{$order['billing_address']['city']}, {$order['billing_address']['region']} {$order['billing_address']['postcode']} {$order['billing_address']['country_id']}\n\n{$order['billing_address']['email']}\n{$order['billing_address']['telephone']}
     ";
+	
+	$billing_address .= 'Sales Tax: '.$this->order['SalesTax'];
+	 
 		
-		$gift_message = isset ( $order ['gift_message'] ) ? mysql_real_escape_string ( $order ['gift_message'] ) : '';
-		
+		//$gift_message = isset ( $order ['gift_message'] ) ? mysql_real_escape_string ( $order ['gift_message'] ) : '';
+		$gift_message = isset ( $order ['gift_message'] ) ?  $order ['gift_message']  : '';
 			
 		$this->order_array = array (
 				'GoingDirect' => 'No',
@@ -355,7 +358,7 @@ class ProcessOrder {
 		
 		// sales tax
 		//if ($this->order ['SalesTax'] > 0) {
-			$line_item_array = array (
+			/*$line_item_array = array (
 					'order_id' => $order_id,
 					'Trans_No' => $this->transaction_no,
 					'supplier_id' => 2326,
@@ -365,7 +368,7 @@ class ProcessOrder {
 					'ItemDescription' => 'Sales Tax Amount',
 					'Product_Price' => $this->order['SalesTax']
 				);
-			$this->order_array['items'][] = $line_item_array;
+			$this->order_array['items'][] = $line_item_array;*/
 		//}
 		
 		echo "<br><br>Order array:<br>";
