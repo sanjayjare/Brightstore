@@ -9,11 +9,13 @@ $status="New";
 $username='AWSWS'; 
 $password='AW$W$U$1';
 $wsdl='https://www.co-store.com/admin/BrightStoresOrderData.asmx?WSDL';
-
+$startDate = date("Y-m-d", strtotime( date( "Y-m-d", strtotime( date("Y-m-d") ) ) . "-1 month" ) );
 $param = array(
 	"userName" =>$username,
 	"password" => $password,
-	"status" => $status,
+	//"status" => $status,
+	"startDate" => $startDate,
+	"endDate" => date('Y-m-d'),
 	"PIN" => '1'
 );
 //print_r($param);
@@ -44,7 +46,7 @@ function search_r($array, $key, $value, &$results)
 $response="";
 try {
 $client = new SoapClient($wsdl);
-$response = $client->GetAllOrdersByStores($param);
+$response = $client->GetDistributorOrdersByDateRange($param);
 } catch (SoapFault $e) {
    // echo "<pre>SoapFault: ".print_r($e, true)."</pre>\n";
 	//echo "Failed to load";
@@ -56,20 +58,20 @@ $response = $client->GetAllOrdersByStores($param);
 }
 
 $resultr = json_decode(json_encode($response), true);
-$xmldata = isset($resultr['GetAllOrdersByStoresResult']['any']) ? $resultr['GetAllOrdersByStoresResult']['any'] : "";
+$xmldata = isset($resultr['GetDistributorOrdersByDateRangeResult']) ? $resultr['GetDistributorOrdersByDateRangeResult'] : "";
+//$xmldata = htmlspecialchars_decode($xmldata);
 $xmldata = str_replace("Â® "," ",$xmldata);
+	
+//print "<pre>";
+//print_r($xmldata);
+//print "</pre>";
 
-/*print "<pre>";
-print_r($xmldata);
-print "</pre>";*/
-
-
+set_time_limit(0);
 
 $xml = simplexml_load_string($xmldata);
-//$xml2xml = $xml->BrightStoresDataSet->OrderLine->zDescription;
 
 $stores="";
-$storearray = isset($xml->BrightStoresDataSet->Store) ? $xml->BrightStoresDataSet->Store : "";
+$storearray = isset($xml->Store) ? $xml->Store : "";
 if(!empty($storearray)){
 foreach($storearray as $store ){
 	$zStoreID = json_decode(json_encode($store->zStoreID),true);
@@ -99,7 +101,7 @@ foreach($storearray as $store ){
 }
 
 $users="";
-$usersarray = isset($xml->BrightStoresDataSet->User) ? $xml->BrightStoresDataSet->User : "";
+$usersarray = isset($xml->User) ? $xml->User : "";
 if(!empty($usersarray)){
 foreach($usersarray as $user ){
 	$zUserID = json_decode(json_encode($user->zUserID),true);
@@ -122,8 +124,9 @@ foreach($usersarray as $user ){
 }
 }
 
+
 $usersgroupa="";
-$usergrouparray = isset($xml->BrightStoresDataSet->UserGroup) ? $xml->BrightStoresDataSet->UserGroup : "";
+$usergrouparray = isset($xml->UserGroup) ? $xml->UserGroup : "";
 if(!empty($usergrouparray)){
 foreach($usergrouparray as $usersgroup ){
 	$zUserGroupID = json_decode(json_encode($usersgroup->zUserGroupID),true);
@@ -141,7 +144,7 @@ foreach($usergrouparray as $usersgroup ){
 }
 
 $orderline="";
-$orderlinearray = isset($xml->BrightStoresDataSet->OrderLine) ? $xml->BrightStoresDataSet->OrderLine : "";
+$orderlinearray = isset($xml->OrderLine) ? $xml->OrderLine : "";
 if(!empty($orderlinearray)){
 foreach($orderlinearray as $orderlin){
 	$xml2xml = $orderlin->zDescription;
@@ -193,7 +196,7 @@ else{
 $singleorderarray="";
 
 $orders="";
-$ordersarray = isset($xml->BrightStoresDataSet->Order) ? $xml->BrightStoresDataSet->Order : "";
+$ordersarray = isset($xml->Order) ? $xml->Order : "";
 if(!empty($ordersarray)){
 foreach($ordersarray as $order){
 	$xml2xml = $order->zPaymentData;
@@ -242,7 +245,7 @@ foreach($ordersarray as $order){
 	/*$orders[]=array(
 			'zOrderID'=>$zOrderID
 			);*/
-	
+	if(@$zOrderStatus[0] == "2"){
 	$orders[$zOrderID[0]]=array(
 			'zOrderID'=>@$zOrderID[0],
 			'zUserID'=>@$zUserID[0],
@@ -283,15 +286,17 @@ foreach($ordersarray as $order){
 		);
 		
 		$orderlinearray = search($orderline, 'zOrderID', $zOrderID[0]);
-		$orderusearray = search($users, 'zUserID', $zUserID[0]);
-		//print_r($orderusearray[0]['zUserGroupID']);
-		$orderusegrouparray = search($usersgroupa, 'zUserGroupID', $orderusearray[0]['zUserGroupID']);
+		//$orderusearray = search($users, 'zUserID', $zUserID[0]);
+		//print_r($users[$zUserID[0]]['zUserGroupID']);
+		//print_r($usersgroupa[$users[$zUserID[0]]['zUserGroupID']]['zStoreID']);
+		//$orderusegrouparray = search($usersgroupa, 'zUserGroupID', $users[$zUserID[0]]['zUserGroupID']);
 		//print_r($stores[@$orderusegrouparray[0]['zStoreID']]['zStoreID']);
 		$singleorderarray=array($orders[$zOrderID[0]], $orderlinearray, $stores[@$usersgroupa[$users[$zUserID[0]]['zUserGroupID']]['zStoreID']], $users[$zUserID[0]]);
 		$singleorder = new ProcessOrder($singleorderarray);
 		//$singleorder($singleorderarray);
 		//print_r($singleorder);
-		
+	}
+	set_time_limit(0);
 }
 }
 

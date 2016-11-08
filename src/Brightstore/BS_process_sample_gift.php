@@ -232,7 +232,7 @@ class ProcessOrder {
 		$this->SoldTo = @$userdetail;
 		//print_r($stores);
 		//$this->SoldTo = getSoldTo($order['increment_id']); //user id      //  $stores[$order[''store_id']']['sold_to']  **may change
-		$this->SoldBy = @$stores[0]['zStoreID']; //store id		//  $stores[$order[''store_id']']['sold_by']  **may change
+		$this->SoldBy = @$stores['zStoreID']; //store id		//  $stores[$order[''store_id']']['sold_by']  **may change
 		//print_r($this->SoldBy);
 		$this->queue_id = 102;
 		$this->customer_PO =  @$order ['increment_id'];  //use store order number as PO#
